@@ -1,0 +1,1 @@
+cl /EHsc /W3 rect-packer.cpp
