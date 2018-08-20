@@ -1,6 +1,12 @@
 #include <vector>
+#include <algorithm>
 #include <cstdlib>
 #include <cassert>
+
+int imax(int a, int b)
+{
+	return a > b ? a : b;
+}
 
 struct Rectangle
 {
@@ -21,8 +27,46 @@ struct Rectangle
 };
 
 // pack all rectangles in-place
-void packRectangles(std::vector<Rectangle> &rectangles)
+void packRectangles(std::vector<Rectangle> &rectangles, int &outputWidth, int &outputHeight)
 {
+	outputWidth = 0;
+	outputHeight = 0;
+	
+	int totalArea = 0;
+	
+	// estimate minimum bounds and total area
+	for (const auto &rectangle: rectangles)
+	{
+		outputWidth = imax(outputWidth, rectangle.width);
+		outputHeight = imax(outputHeight, rectangle.height);
+		totalArea += rectangle.width * rectangle.height;
+	}
+	
+	// estimate border length from total area (assume full packing efficiency)
+	int borderLength = (int)sqrt((double)totalArea);
+	
+	// round up to next power of two
+	int nextBorderLength = 0;
+	for (int i = 1; i < borderLength; i *= 2)
+		nextBorderLength = i;
+	
+	// width cannot be smaller than the largest rectangle
+	outputWidth = imax(outputWidth, nextBorderLength);
+	
+	// sort rectangles by relative perimeter
+	std::sort(rectangles.begin(), rectangles.end(), [](const Rectangle &lhs, const Rectangle &rhs)
+	{
+		return lhs.width + lhs.height < rhs.width + rhs.height;
+	});
+	
+	// stupid starting algorithm
+	int y = 0;
+	for (auto &rectangle: rectangles)
+	{
+		rectangle.y = y;
+		y += rectangle.height;
+		outputHeight = imax(outputHeight, y);
+	}
 }
 
 unsigned char bmpHeader[] = {
@@ -61,9 +105,9 @@ void saveDebugImage(const std::string &filename, int width, int height, const st
 				assert(y < height);
 				
 				// overlap check
-				/*assert(data[offset + 0] == 0);
+				assert(data[offset + 0] == 0);
 				assert(data[offset + 1] == 0);
-				assert(data[offset + 2] == 0);*/
+				assert(data[offset + 2] == 0);
 				
 				// write pixel
 				data[offset++] = color;
@@ -99,9 +143,10 @@ int main()
 		rectangles.push_back(Rectangle(width, height));
 	}
 	
-	packRectangles(rectangles);
+	int imageWidth, imageHeight;
+	packRectangles(rectangles, imageWidth, imageHeight);
 	
-	saveDebugImage("plop.bmp", 256, 256, rectangles);
+	saveDebugImage("plop.bmp", imageWidth, imageHeight, rectangles);
 	
 	return 0;
 }
