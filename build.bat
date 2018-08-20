@@ -1,1 +1,1 @@
-cl /EHsc /W3 rect-packer.cpp
+cl /EHsc /W3 -D_CRT_SECURE_NO_WARNINGS rect-packer.cpp
