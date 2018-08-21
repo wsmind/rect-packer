@@ -91,7 +91,10 @@ void saveDebugImage(const std::string &filename, int width, int height, const st
 	// rasterize each rectangle into bitmap form
 	for (const auto &rectangle: rectangles)
 	{
-		unsigned char color = rand() % 128 + 128;
+		unsigned char colorR = rand() % 128 + 128;
+		unsigned char colorG = rand() % 128 + 128;
+		unsigned char colorB = rand() % 128 + 128;
+		
 		for (int y = rectangle.y; y < rectangle.y + rectangle.height; y++)
 		{
 			for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++)
@@ -110,9 +113,9 @@ void saveDebugImage(const std::string &filename, int width, int height, const st
 				assert(data[offset + 2] == 0);
 				
 				// write pixel
-				data[offset++] = color;
-				data[offset++] = color;
-				data[offset++] = color;
+				data[offset++] = colorB;
+				data[offset++] = colorG;
+				data[offset++] = colorR;
 			}
 		}
 	}
