@@ -66,7 +66,7 @@ void packRectangles(std::vector<Rectangle> &rectangles, int &outputWidth, int &o
 	// sort rectangles by relative perimeter
 	std::sort(rectangles.begin(), rectangles.end(), [](const Rectangle &lhs, const Rectangle &rhs)
 	{
-		return lhs.width + lhs.height < rhs.width + rhs.height;
+		return lhs.width + lhs.height >= rhs.width + rhs.height;
 	});
 
 	// place every rectangle one by one
