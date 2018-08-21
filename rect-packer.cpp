@@ -72,7 +72,7 @@ void packRectangles(std::vector<Rectangle> &rectangles, int &outputWidth, int &o
 	// place every rectangle one by one
 	int currentY = 0;
 	int currentKey = 0;
-	for (int i = 0; i < rectangles.size(); i++)
+	for (unsigned int i = 0; i < rectangles.size(); i++)
 	{
 		Rectangle &rectangle = rectangles[i];
 		int key = rectangle.width + rectangle.height;
@@ -92,7 +92,7 @@ void packRectangles(std::vector<Rectangle> &rectangles, int &outputWidth, int &o
 			rectangle.y = currentY;
 			
 			placed = true;
-			for (int j = 0; j < i; j++)
+			for (unsigned int j = 0; j < i; j++)
 			{
 				const Rectangle &other = rectangles[j];
 				if (other.intersect(rectangle))
