@@ -150,7 +150,7 @@ void saveDebugImage(const std::string &filename, int width, int height, const st
 		{
 			for (int x = rectangle.x; x < rectangle.x + rectangle.width; x++)
 			{
-				int offset = (y * width + x) * 3;
+				int offset = ((height - y - 1) * width + x) * 3;
 				
 				// image bounds check
 				assert(x >= 0);
@@ -192,12 +192,17 @@ int main()
 	
 	for (int i = 0; i < 200; i++)
 	{
-		//int width = rand() % 256;
-		//int height = rand() % 256;
+		// unconstrained random size
+		int width = rand() % 256;
+		int height = rand() % 256;
 		
 		// power-of-two boxes
-		int width = 1 << (rand() % 7);
-		int height = 1 << (rand() % 7);
+		//int width = 1 << (rand() % 7);
+		//int height = 1 << (rand() % 7);
+		
+		// power-of-two squares
+		//int width = 1 << (rand() % 7);
+		//int height = width;
 		
 		rectangles.push_back(Rectangle(width, height));
 	}
