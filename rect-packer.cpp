@@ -24,6 +24,16 @@ struct Rectangle
 		, x(0)
 		, y(0)
 		{}
+	
+	bool intersect(const Rectangle &rhs) const
+	{
+		if (rhs.y >= this->y + this->height) return false;
+		if (this->y >= rhs.y + rhs.height) return false;
+		if (rhs.x >= this->x + this->width) return false;
+		if (this->x >= rhs.x + rhs.width) return false;
+		
+		return true;
+	}
 };
 
 // pack all rectangles in-place
@@ -58,14 +68,55 @@ void packRectangles(std::vector<Rectangle> &rectangles, int &outputWidth, int &o
 	{
 		return lhs.width + lhs.height < rhs.width + rhs.height;
 	});
-	
-	// stupid starting algorithm
-	int y = 0;
-	for (auto &rectangle: rectangles)
+
+	// place every rectangle one by one
+	int currentY = 0;
+	int currentKey = 0;
+	for (int i = 0; i < rectangles.size(); i++)
 	{
-		rectangle.y = y;
+		Rectangle &rectangle = rectangles[i];
+		int key = rectangle.width + rectangle.height;
+		
+		if (key != currentKey)
+		{
+			currentY = 0;
+			currentKey = key;
+		}
+		
+		// find space for this rectangle (very basic O(n^2) implementation)
+		bool placed = false;
+		int currentX = 0;
+		while (!placed)
+		{
+			rectangle.x = currentX;
+			rectangle.y = currentY;
+			
+			placed = true;
+			for (int j = 0; j < i; j++)
+			{
+				const Rectangle &other = rectangles[j];
+				if (other.intersect(rectangle))
+				{
+					placed = false;
+					currentX = other.x + other.width;
+					
+					if (currentX + rectangle.width > outputWidth)
+					{
+						currentX = 0;
+						currentY++;
+					}
+					
+					break;
+				}
+			}
+		}
+		
+		outputHeight = imax(outputHeight, rectangle.y + rectangle.height);
+		
+		// stupid packing
+		/*rectangle.y = y;
 		y += rectangle.height;
-		outputHeight = imax(outputHeight, y);
+		outputHeight = imax(outputHeight, y);*/
 	}
 }
 
