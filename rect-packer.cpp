@@ -192,8 +192,13 @@ int main()
 	
 	for (int i = 0; i < 200; i++)
 	{
-		int width = rand() % 256;
-		int height = rand() % 256;
+		//int width = rand() % 256;
+		//int height = rand() % 256;
+		
+		// power-of-two boxes
+		int width = 1 << (rand() % 7);
+		int height = 1 << (rand() % 7);
+		
 		rectangles.push_back(Rectangle(width, height));
 	}
 	
